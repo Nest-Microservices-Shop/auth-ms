@@ -1,15 +1,15 @@
 version: '3'
 
 services:
-  auth-db:
-    container_name: auth_database
-    image: postgres:16.2-alpine
-    restart: always
-    volumes:
-      - ./postgres:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
+  auth-ms:
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+      args:
+        - AUTH_DATABASE_URL=${AUTH_DATABASE_URL}
+    image: fmyersdev/auth-ms:latest
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=authdb
+      - PORT=${PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}

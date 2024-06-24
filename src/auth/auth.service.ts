@@ -1,11 +1,5 @@
-import {
-  HttpStatus,
-  Inject,
-  Injectable,
-  Logger,
-  OnModuleInit,
-} from '@nestjs/common';
-import { ClientProxy, Payload, RpcException } from '@nestjs/microservices';
+import { HttpStatus, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { RpcException } from '@nestjs/microservices';
 import { PrismaClient } from '@prisma/client';
 import { LoginUserDto, RegisterUserDto } from './dto';
 import * as bcrypt from 'bcrypt';
@@ -38,7 +32,7 @@ export class AuthService extends PrismaClient implements OnModuleInit {
 
       if (user) {
         throw new RpcException({
-          status: 400,
+          status: HttpStatus.BAD_REQUEST,
           message: 'User already exist',
         });
       }
@@ -73,7 +67,7 @@ export class AuthService extends PrismaClient implements OnModuleInit {
 
       if (!user) {
         throw new RpcException({
-          status: 400,
+          status: HttpStatus.BAD_REQUEST,
           message: 'User not found',
         });
       }
@@ -82,7 +76,7 @@ export class AuthService extends PrismaClient implements OnModuleInit {
 
       if (!isValidPassword) {
         throw new RpcException({
-          status: HttpStatus.FOUND,
+          status: HttpStatus.BAD_REQUEST,
           message: 'Invalid password',
         });
       }
@@ -95,7 +89,7 @@ export class AuthService extends PrismaClient implements OnModuleInit {
       };
     } catch (error) {
       throw new RpcException({
-        status: 400,
+        status: HttpStatus.BAD_REQUEST,
         message: error.message,
       });
     }
@@ -113,7 +107,7 @@ export class AuthService extends PrismaClient implements OnModuleInit {
       };
     } catch (error) {
       throw new RpcException({
-        status: HttpStatus.FORBIDDEN,
+        status: HttpStatus.UNAUTHORIZED,
         message: 'Token not valid',
       });
     }
